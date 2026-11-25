@@ -5,7 +5,7 @@ import fs from "node:fs";
 const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const PORT = 9445;
 const PROFILE = "C:\\Harness\\.amis-chrome-e2e";
-const URL = "http://127.0.0.1:5173/";
+const URL = process.env.APP_URL || "http://127.0.0.1:5173/";
 const SHOTS = "C:\\Harness\\amis-coop\\shots";
 
 fs.rmSync(PROFILE, { recursive: true, force: true });

@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useApp } from "../lib/store";
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from "../data/seed";
 import { accountMap, dateLabel, incomeStatement, money, todayISO } from "../lib/accounting";
@@ -25,6 +25,8 @@ function EntryForm({ kind, onClose }) {
 
   const category = categories.find((c) => c.key === type);
   const member = state.members.find((m) => m.id === memberId);
+  const duplicateInvoice = invoice.trim() &&
+    state.transactions.some((t) => t.invoice && t.invoice.toLowerCase() === invoice.trim().toLowerCase());
 
   const submit = (event) => {
     event.preventDefault();
@@ -117,6 +119,12 @@ function EntryForm({ kind, onClose }) {
           />
         </Field>
       </div>
+
+      {duplicateInvoice ? (
+        <div className="form-warning">
+          Invoice {invoice.trim()} already appears on another voucher. Check for a duplicate before submitting.
+        </div>
+      ) : null}
 
       <div className="form-note">
         This entry will be saved as <strong>pending approval</strong>. It reaches the ledger only after the approver posts it.

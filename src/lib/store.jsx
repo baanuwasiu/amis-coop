@@ -79,8 +79,25 @@ export function AppProvider({ children }) {
 
   function login(username, password) {
     const found = state.users.find((u) => u.username === username.trim().toLowerCase());
-    if (!found) return { ok: false, error: "Unknown username. Use one of the demo accounts below." };
-    if (password !== DEMO_PASSWORD) return { ok: false, error: "Incorrect password. The demo password is demo1234." };
+    const failed = (message) => {
+      setState((prev) => {
+        const next = structuredClone(prev);
+        auditSeq += 1;
+        next.audit.unshift({
+          id: `AU-${Date.now()}-${auditSeq}`,
+          at: new Date().toISOString(),
+          user: username || "unknown",
+          role: "Unknown",
+          action: "LOGIN FAILED",
+          object: "Session",
+          detail: message,
+        });
+        return next;
+      });
+      return { ok: false, error: message };
+    };
+    if (!found) return failed("Unknown username. Use one of the demo accounts below.");
+    if (password !== DEMO_PASSWORD) return failed("Incorrect password. The demo password is demo1234.");
     setUser(found);
     setState((prev) => {
       const next = structuredClone(prev);

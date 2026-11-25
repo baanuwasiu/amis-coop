@@ -386,6 +386,7 @@ table.data.compact td, table.data.compact th { padding: 7px 6px; }
 .field.full { grid-column: 1 / -1; }
 .form-note { background: var(--gold-pale); border: 1px solid #e5d4a4; border-radius: 7px; padding: 9px 11px; font-size: 10.5px; color: #6b5316; margin: 12px 0; }
 .form-error { background: var(--red-soft); border: 1px solid #ebcfc9; color: var(--red); border-radius: 7px; padding: 8px 11px; font-size: 11px; margin: 10px 0; }
+.form-warning { background: var(--amber-soft); border: 1px solid #eedcb5; color: var(--amber); border-radius: 7px; padding: 8px 11px; font-size: 10.5px; margin: 10px 0; }
 .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
 .modal-overlay { position: fixed; inset: 0; background: rgba(5, 32, 24, 0.55); display: flex; align-items: flex-start; justify-content: center; padding: 36px 16px; overflow-y: auto; z-index: 100; backdrop-filter: blur(2px); }
 .modal { width: 100%; max-width: 560px; background: var(--paper); border-radius: 12px; border: 1px solid rgba(201, 162, 39, 0.28); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); }
