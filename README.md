@@ -4,6 +4,8 @@ A working frontend demo of the accounting system described in *AMIS Members Acco
 
 The app follows the guide’s flow: **capture → classify → post → report → review**.
 
+![AMIS Cooperative Finance Desk dashboard](docs/screenshots/dashboard.png)
+
 ---
 
 ## What is implemented

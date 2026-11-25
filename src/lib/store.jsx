@@ -147,6 +147,10 @@ export function AppProvider({ children }) {
 
   function approveTransaction(id) {
     if (!role.canApprove) return { ok: false, error: "Your role cannot approve entries." };
+    if (state.period.locked) {
+      notify("The period is locked. Reopen it before approving entries.", "warning");
+      return { ok: false, error: "The period is locked." };
+    }
     commit(
       (next) => {
         const tx = next.transactions.find((t) => t.id === id);
@@ -366,19 +370,45 @@ export function AppProvider({ children }) {
 
   function addInventoryItem(data) {
     if (!role.canManage) return { ok: false, error: "Your role cannot manage inventory." };
+    if (state.period.locked) return { ok: false, error: "The period is locked." };
     const id = `ST-${String(state.inventory.length + 1).padStart(3, "0")}`;
+    const qty = Number(data.qty);
+    const unitCost = Number(data.unitCost);
+    const value = qty * unitCost;
+    const ref = nextRef(state, "journal");
+    const openingTx = qty > 0 ? {
+      id: ref,
+      ref,
+      date: state.period.end,
+      kind: "journal",
+      type: "opening_stock",
+      description: `Opening stock — ${data.name}`,
+      party: "Inventory opening",
+      amount: value,
+      method: "—",
+      status: "posted",
+      createdBy: user.name,
+      approvedBy: user.name,
+      evidence: "stock-opening.pdf",
+      lines: [
+        { code: "1050", debit: value },
+        { code: "3030", credit: value },
+      ],
+    } : null;
+
     commit(
       (next) => {
         next.inventory.push({
           id,
           name: data.name,
           unit: data.unit,
-          qty: Number(data.qty),
+          qty,
           reorder: Number(data.reorder),
-          unitCost: Number(data.unitCost),
+          unitCost,
         });
+        if (openingTx) next.transactions.push(openingTx);
       },
-      ["INVENTORY", id, `Added ${data.name}`],
+      ["INVENTORY", id, `Added ${data.name}${qty ? ` · opening stock ${qty}` : ""}`],
     );
     notify(`${id} added`);
     return { ok: true };
